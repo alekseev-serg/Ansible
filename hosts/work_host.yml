@@ -1,0 +1,12 @@
+---
+webservers:
+  hosts:
+    192.168.111.131:
+      ansible_user: user
+      ansible_password: '!'
+      ansible_become_pass: '!'
+
+#    192.168.111.133:
+#      ansible_user: user
+#      ansible_password: '!'
+#      ansible_become_pass: '!'
