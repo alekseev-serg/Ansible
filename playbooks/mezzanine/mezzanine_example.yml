@@ -1,0 +1,47 @@
+---
+- name: deploy mezzanine
+  hosts: webservers
+  become: True
+  vars:
+    user: "{{ ansible_user }}"
+    proj_name: mezzanine_example
+    venv_home: "{{ ansible_env.HOME }}/.venv"
+    venv_path: "{{ venv_home }}/{{ proj_name }}"
+    proj_path: "{{ ansible_env.HOME }}/mezzanine/{{ proj_name }}"
+    settings_path: "{{ proj_path }}/{{ proj_name }}"
+    reqs_path: requirements.txt
+    manage: "{{ python }} {{ proj_path }}/manage.py"
+    live_hostname: "192.168.111.131"
+    domains:
+      - 192.168.111.131
+    repo_url: git@github.com:ansiblebook/mezzanine_example.git
+    gunicorn_port: 8000
+    locale: en_US.UTF-8
+    # Variables below don't appear in Mezannine's fabfile.py
+    # but I've added them for convenience
+    conf_path: /etc/nginx/conf
+    tls_enabled: True
+    python: "{{ venv_path }}/bin/python"
+    database_name: "{{ proj_name }}"
+    database_user: "{{ proj_name }}"
+    database_host: localhost
+    database_port: 5432
+    gunicorn_proc_name: gunicorn_mezzanine
+    num_workers: "multiprocessing.cpu_count() * 2 + 1"
+  vars_files:
+    - secrets.yml
+
+  tasks:
+    - name: "Print all variables"
+      debug:
+        msg: |
+          {{ user }}
+          {{ proj_app }}
+          {{ proj_name }}
+          {{ venv_home }}
+          {{ venv_path }}
+          {{ proj_path }}
+          {{ settings_path }}
+          {{ reqs_path }}
+          {{ live_hostname }}
+          {{ domains }}

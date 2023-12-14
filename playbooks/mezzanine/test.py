@@ -1,0 +1,2 @@
+s = 'user\nmezzanine_example\nmezzanine_example\n/root/.venv\n/root/.venv/mezzanine_example\n/root/mezzanine/mezzanine_example\n/root/mezzanine/mezzanine_example / mezzanine_example\nrequirements.txt \n'
+print(s)

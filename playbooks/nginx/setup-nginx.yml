@@ -1,5 +1,5 @@
 ---
-- name: Setup Nginx
+- name: Setup Nginx with SSL
   hosts: webservers
   become: True
   tasks:
