@@ -43,7 +43,7 @@
       notify: restart nginx
 
     - name: copy index.html
-      copy:
+      template:
         src=files/index.html.j2
         dest=/usr/share/nginx/html/index.html
         mode=0644
