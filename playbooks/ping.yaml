@@ -1,0 +1,8 @@
+---
+- name: Ping Servers
+  hosts: k8s_cluster
+  become: yes
+
+  tasks:
+    - name: Ping servers
+      ping:
