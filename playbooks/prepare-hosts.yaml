@@ -6,6 +6,6 @@
   tasks:
     - name: Update and upgrade packages
       yum:
-        name: *
+        name: '*'
         state: latest
         update_cache: true
