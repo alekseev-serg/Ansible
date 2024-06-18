@@ -22,7 +22,6 @@
           - python3
           - tar
           - rsyslog
-          - ncdu
           - htop
           - wget
         state: latest
