@@ -1,0 +1,109 @@
+---
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ mailserver_working_dir }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Ensure crontab is installed
+  ansible.builtin.apt:
+    pkg: "cron"
+    state: present
+
+- name: Ensure database roundcube is present
+  community.mysql.mysql_db:
+    name: "{{ mailserver_mysql_db_name_roundcube }}"
+    state: present
+    encoding: "utf8"
+    collation: "utf8_general_ci"
+    login_user: "{{ mailserver_mysql_root_user }}"
+    login_password: "{{ mailserver_mysql_root_password }}"
+  notify:
+    - Import database
+    - Flush Priviliges
+
+- name: Ensure database roundcube user is present
+  community.mysql.mysql_user:
+    name: "{{ mailserver_mysql_user_roundcube }}"
+    password: "{{ mailserver_mysql_password_roundcube }}"
+    priv: "{{ mailserver_mysql_db_name_roundcube }}.*:ALL,GRANT"
+    state: present
+    login_user: "{{ mailserver_mysql_root_user }}"
+    login_password: "{{ mailserver_mysql_root_password }}"
+
+- name: Check if roundcube directory exists
+  ansible.builtin.stat:
+    path: "{{ mailserver_working_dir }}/roundcubemail-{{ mailserver_roundcuve_version }}"
+  register: "roundcube_directory"
+
+- name: Get roundcube release
+  ansible.builtin.get_url:
+    url: "https://github.com/roundcube/roundcubemail/releases/download/{{ mailserver_roundcuve_version }}/roundcubemail-{{ mailserver_roundcuve_version }}-complete.tar.gz"
+    dest: "{{ mailserver_working_dir }}"
+    owner: www-data
+    group: www-data
+    mode: "0755"
+  when: not ansible_check_mode
+  register: download
+
+- name: Unarchive roundcube
+  ansible.builtin.unarchive:
+    src: "{{ mailserver_working_dir }}/roundcubemail-{{ mailserver_roundcuve_version }}-complete.tar.gz"
+    dest: "{{ mailserver_working_dir }}"
+    owner: www-data
+    group: www-data
+    mode: 0755
+    copy: no
+  when: (download.changed) or
+    (not roundcube_directory.stat.exists)
+
+- name: Link to http roundcube release
+  ansible.builtin.file:
+    src: "{{ mailserver_working_dir }}/roundcubemail-{{ mailserver_roundcuve_version }}"
+    dest: "{{ mailserver_roundcube_path }}"
+    owner: www-data
+    group: www-data
+    state: link
+    follow: False
+    mode: 0777
+  register: link
+
+- name: Ensure roundcube and plugin configs are latest
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ mailserver_roundcube_path }}/{{ item }}"
+    owner: www-data
+    group: www-data
+    mode: 0640
+  with_items:
+    - config.inc.php
+
+- name: Ensure nginx config
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  with_items:
+    - default
+  notify: Restart nginx
+
+- name: Create Roundcube cleandb cronjob
+  ansible.builtin.cron:
+    name: "Roundcube cleandb cronjob"
+    minute: "10"
+    hour: "6"
+    user: www-data
+    job: "{{ mailserver_roundcube_path }}/bin/cleandb.sh >/dev/null"
+    cron_file: roundcube
+
+- name: Create Roundcube garbage collector cronjob
+  ansible.builtin.cron:
+    name: "Roundcube garbage collector cronjob"
+    minute: "30"
+    user: www-data
+    job: "{{ mailserver_roundcube_path }}/bin/gc.sh >/dev/null"
+    cron_file: roundcube

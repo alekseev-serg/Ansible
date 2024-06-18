@@ -1,0 +1,17 @@
+---
+- name: create sys group
+  ansible.builtin.group:
+    name: "{{ minio__group }}"
+    state: present
+    gid: 1088
+
+- name: create sys user
+  ansible.builtin.user: 
+    name: "{{ minio__user }}"
+    state: present
+    uid: 1088
+    groups: "{{ minio__group }}"
+    append: yes
+    system: yes
+    shell: /usr/sbin/nologin
+    

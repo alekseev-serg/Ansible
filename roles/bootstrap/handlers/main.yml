@@ -1,0 +1,15 @@
+---
+- name: restart journald
+  ansible.builtin.systemd:
+    name: systemd-journald
+    state: restarted
+  become: true
+- name: restart sssd
+  ansible.builtin.systemd:
+    name: sssd.service
+    state: restarted
+  become: true
+- name: update yum cache
+  ansible.builtin.command:
+    cmd: yum makecache
+  become: true

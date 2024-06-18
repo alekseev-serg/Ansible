@@ -1,0 +1,6 @@
+---
+minio__version: "RELEASE.2023-11-20T22-40-07Z"
+minio__storage_dir: "/minio"
+minio__root_user: "admin"
+minio__volumes: "http://devdata-minio-0{1...4}:9000/minio"
+minio__OPTS: "--console-address :9001"

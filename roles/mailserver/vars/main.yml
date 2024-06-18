@@ -1,0 +1,16 @@
+---
+mailserver_ssl_path_cert: '/etc/dovecot/private/{{ mailserver_ssl_cert }}'
+mailserver_ssl_path_key: '/etc/dovecot/private/{{ mailserver_ssl_key }}'
+mailserver_ssl_path_ca: '/etc/dovecot/private/{{ mailserver_ssl_ca }}'
+
+mailserver_pa_repo: https://github.com/postfixadmin/postfixadmin/archive/postfixadmin-{{ mailserver_pa_version }}.tar.gz
+
+mailserver_working_dir: "/var/www/{{ mailserver_domain }}"
+mailserver_pa_path: "/var/www/html/admin"
+
+mailserver_roundcube_path: "/var/www/html/webmail"
+
+mailserver_roundcube_des_key: "16"
+mailserver_roundcube_cipher_method: AES-256-CBC
+mailserver_roundcube_skin: elastic
+mailserver_roundcube_language: 'en_US'

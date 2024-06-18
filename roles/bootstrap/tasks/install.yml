@@ -1,0 +1,28 @@
+---
+- block:
+    - name: Update all apt packages to their latest version
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+      when: bootstrap__update_packages and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+
+    - name: Update all yum packages to their latest version
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+    - name: install apt pakages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+      loop: "{{ bootstrap__packages }}"
+
+    - name: install yum pakages
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+      loop: "{{ bootstrap__packages }}"
+  become: true

@@ -1,0 +1,50 @@
+---
+- name: Create /etc/postfix/main.cf
+  ansible.builtin.template:
+    src: postfix-main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: postfix
+    mode: 0640
+    backup: yes
+
+- name: Create /etc/postfix/master.cf
+  ansible.builtin.copy:
+    src: postfix-master.cf
+    dest: /etc/postfix/master.cf
+    owner: root
+    group: postfix
+    mode: 0640
+    backup: yes
+
+- name: Create /etc/postfix/mysql_virtual_domains_maps.cf
+  ansible.builtin.template:
+    src: mysql_virtual_domains_maps.cf.j2
+    dest: /etc/postfix/mysql_virtual_domains_maps.cf
+    owner: root
+    group: postfix
+    mode: 0640
+    backup: yes
+
+- name: Create /etc/postfix/mysql_virtual_mailbox_maps.cf
+  ansible.builtin.template:
+    src: mysql_virtual_mailbox_maps.cf.j2
+    dest: /etc/postfix/mysql_virtual_mailbox_maps.cf
+    owner: root
+    group: postfix
+    mode: 0640
+    backup: yes
+
+- name: Create /etc/postfix/mysql_virtual_alias_maps.cf
+  ansible.builtin.template:
+    src: mysql_virtual_alias_maps.cf.j2
+    dest: /etc/postfix/mysql_virtual_alias_maps.cf
+    owner: root
+    group: postfix
+    mode: 0640
+    backup: yes
+
+- name: Restart Postfix
+  ansible.builtin.service:
+    name: postfix
+    state: restarted

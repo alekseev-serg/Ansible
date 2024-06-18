@@ -1,0 +1,33 @@
+---
+- block:
+    - name: check constraints
+      ansible.builtin.assert:
+        that:
+          - item.path is defined and item.path is abs
+          - item.volume is defined
+    - name: create mount point
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: 0755
+        owner: root
+        group: root
+        state: directory
+    - name: create LVM volume
+      community.general.lvol:
+        vg: "{{ bootstrap__storage_group_name }}"
+        lv: "{{ item.volume }}"
+        size: "{{ item.volume_size | default('100%PVS') }}"
+    - name: create xfs filesystem
+      community.general.filesystem:
+        dev: "{{ __volume }}"
+        fstype: xfs
+    - name: mount filesystem
+      ansible.posix.mount:
+        src: "{{ __volume }}"
+        path: "{{ item.path }}"
+        fstype: xfs
+        opts: "{{ item.mount_opts | default(['defaults']) | join(',') }}"
+        state: mounted
+  become: true
+  vars:
+    __volume: "/dev/mapper/{{ bootstrap__storage_group_name }}-{{ item.volume }}"

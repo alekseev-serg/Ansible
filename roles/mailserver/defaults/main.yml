@@ -1,0 +1,22 @@
+mailserver_domain: 'devdata.lan'
+
+mailserver_mysql_root_user: 'root'
+mailserver_mysql_root_password: 'generate-a-random-password'
+mailserver_mysql_user: 'mailserver'
+mailserver_mysql_password: 'generate-a-random-password'
+mailserver_mysql_db_name: 'mailserver'
+
+mailserver_ssl_cert: 'mailserver.crt'
+mailserver_ssl_key: 'mailserver.key'
+mailserver_ssl_ca: 'mailserver-ca.crt'
+
+mailserver_pa_version: 3.3.10
+
+mailserver_pa_admin_user: 'root@devdata.lan'
+mailserver_pa_admin_password: 'generate-a-random-password123'
+
+mailserver_roundcuve_version: 1.6.5
+
+mailserver_mysql_user_roundcube: 'roundcube'
+mailserver_mysql_password_roundcube: 'generate-a-random-password'
+mailserver_mysql_db_name_roundcube: "roundcubemail"

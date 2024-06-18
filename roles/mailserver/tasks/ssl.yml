@@ -1,0 +1,23 @@
+- name: Copy SSL Certificate
+  ansible.builtin.copy:
+    src: '{{ mailserver_ssl_cert }}'
+    dest: '{{ mailserver_ssl_path_cert }}'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy SSL Key
+  ansible.builtin.copy:
+    src: '{{ mailserver_ssl_key }}'
+    dest: '{{ mailserver_ssl_path_key }}'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Copy CA Certificate
+  ansible.builtin.copy:
+    src: '{{ mailserver_ssl_ca }}'
+    dest: '{{ mailserver_ssl_path_ca }}'
+    owner: root
+    group: root
+    mode: 0644

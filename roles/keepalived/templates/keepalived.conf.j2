@@ -1,0 +1,21 @@
+global_defs {
+    enable_script_security
+}
+vrrp_instance {{ keepalived__instance_name }} {
+{% for host in keepalived__instances %}
+{% if host.ip == ansible_default_ipv4.address %}
+state {{ host.state }}
+priority {{ host.priority }}
+{% endif %}
+{% endfor %}
+interface {{ keepalived__interface }}
+virtual_router_id 55
+advert_int {{ keepalived__count_hosts }}
+authentication {
+    auth_type {{ keepalived__auth_type }}
+    auth_pass {{ keepalived__pass }}
+}
+virtual_ipaddress {
+    {{ keepalived__virtual_ipaddress }}
+}
+}

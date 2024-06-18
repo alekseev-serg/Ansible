@@ -1,0 +1,20 @@
+<?php
+$CONF['configured'] = true;
+$CONF['setup_password'] = '{{ mailserver_pa_setup_password.stdout }}';
+$CONF['default_language'] = 'ru';
+$CONF['database_type'] = 'mysqli';
+$CONF['database_host'] = 'localhost';
+$CONF['database_user'] = '{{ mailserver_mysql_user }}';
+$CONF['database_password'] = '{{ mailserver_mysql_password }}';
+$CONF['database_name'] = '{{ mailserver_mysql_db_name }}';
+$CONF['encrypt'] = 'md5crypt';
+$CONF['emailcheck_resolve_domain']='NO';
+$CONF['default_aliases'] = array (
+ 'abuse' => '{{ mailserver_pa_admin_user | split('@') | first }}',
+ 'hostmaster' => '{{ mailserver_pa_admin_user | split('@') | first }}',
+ 'postmaster' => '{{ mailserver_pa_admin_user | split('@') | first }}',
+ 'webmaster' => '{{ mailserver_pa_admin_user | split('@') | first }}'
+);
+$CONF['domain_path'] = 'YES';
+$CONF['domain_in_mailbox'] = 'YES';
+?>

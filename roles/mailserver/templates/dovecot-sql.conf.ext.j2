@@ -1,0 +1,6 @@
+driver = mysql
+default_pass_scheme = MD5-CRYPT
+connect = host=localhost dbname={{ mailserver_mysql_db_name }} user={{ mailserver_mysql_user }} password={{ mailserver_mysql_password }}
+password_query = SELECT password FROM mailbox WHERE username = '%u'
+user_query = SELECT maildir, 5000 AS uid, 5000 AS gid FROM mailbox WHERE username = '%u'
+user_query = SELECT CONCAT('/home/vmail/',LCASE(`domain`),'/',LCASE(`maildir`)), 5000 AS uid, 5000 AS gid FROM mailbox WHERE username = '%u'

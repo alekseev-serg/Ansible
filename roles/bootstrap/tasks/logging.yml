@@ -1,0 +1,24 @@
+---
+- block:
+    - name: edit journald.conf
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/journald.conf
+        regexp: '^#?{{ item.key }}\s*=.*'
+        line: "{{ item.key }}={{ item.value }}"
+        create: false
+      notify: restart journald
+      loop:
+        - key: SystemMaxUse
+          value: 1G
+        - key: SystemKeepFree
+          value: 1G
+      loop_control:
+        label: "{{ item.key }}"
+    - name: edit logrotate config
+      ansible.builtin.copy:
+        content: "{{ logrotate_conf }}"
+        dest: /etc/logrotate.conf
+        mode: 0644
+        owner: root
+        group: root
+  become: true

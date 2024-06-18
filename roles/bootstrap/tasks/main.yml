@@ -1,0 +1,24 @@
+---
+- tags: [bootstrap]
+  block:
+    - name: configure logging
+      tags: [bootstrap.logging]
+      ansible.builtin.import_tasks: logging.yml
+    - name: create storage disk
+      tags: [bootstrap.storage]
+      ansible.builtin.import_tasks: storage.yml
+      when: bootstrap__storage_enable
+    - name: update system
+      tags: [never, bootstrap.update]
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+      become: true
+    - name: install packages
+      tags: [bootstrap.packages]
+      ansible.builtin.import_tasks: install.yml
+    - name: flush handlers
+      meta: flush_handlers
+- name: include ops tasks
+  ansible.builtin.include_tasks:
+    file: ops.yml

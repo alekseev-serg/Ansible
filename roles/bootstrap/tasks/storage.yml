@@ -1,0 +1,23 @@
+---
+- block:
+    - name: create single partition on drive
+      community.general.parted:
+        device: "{{ bootstrap__storage_device }}"
+        label: gpt
+        number: 1
+        name: data
+        state: present
+    - name: create LVM volume group
+      community.general.lvg:
+        vg: "{{ bootstrap__storage_group_name }}"
+        pvs: "{{ [bootstrap__storage_device, '1'] | join('') }}"
+        state: present
+    - name: create volumes and mountpoints
+      ansible.builtin.include_tasks:
+        file: volume.yml
+        apply:
+          tags: [bootstrap, bootstrap.storage]
+      loop: "{{ bootstrap__storage_volumes }}"
+      loop_control:
+        label: "{{ item.path }}"
+  become: true

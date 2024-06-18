@@ -1,0 +1,109 @@
+---
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: "{{ mailserver_working_dir }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Check if postfix_admin directory exists
+  ansible.builtin.stat:
+    path: "{{ mailserver_working_dir }}/postfixadmin-postfixadmin-{{ mailserver_pa_version }}"
+  register: pa_directory
+
+- name: Get postfix_admin release
+  ansible.builtin.get_url:
+    url: "{{ mailserver_pa_repo }}"
+    dest: "{{ mailserver_working_dir }}"
+    owner: www-data
+    group: www-data
+    mode: "0755"
+  when: not ansible_check_mode
+  register: download
+
+- name: Unarchive postfix_admin
+  ansible.builtin.unarchive:
+    src: "{{ mailserver_working_dir }}/postfixadmin-postfixadmin-{{ mailserver_pa_version }}.tar.gz"
+    dest: "{{ mailserver_working_dir }}"
+    owner: www-data
+    group: www-data
+    mode: 0755
+    copy: no
+  when: (download.changed) or
+    (not pa_directory.stat.exists)
+
+- name: Create dir templates_c
+  ansible.builtin.file:
+    path: "{{ mailserver_working_dir }}/postfixadmin-postfixadmin-{{ mailserver_pa_version }}/templates_c"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0755
+
+- name: Link to http postfix_admin release
+  ansible.builtin.file:
+    src: "{{ mailserver_working_dir }}/postfixadmin-postfixadmin-{{ mailserver_pa_version }}"
+    dest: "{{ mailserver_pa_path }}"
+    owner: www-data
+    group: www-data
+    state: link
+    follow: False
+    mode: 0777
+  register: link
+
+- name: Generate setup password
+  ansible.builtin.command: php -r "echo password_hash('{{ mailserver_pa_admin_password }}', PASSWORD_DEFAULT);"
+  register: mailserver_pa_setup_password
+
+- name: Ensure postfix_admin configs are latest
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ mailserver_pa_path }}/config.local.php"
+    owner: www-data
+    group: www-data
+    mode: 0640
+  with_items:
+    - postfix-admin-config.local.php
+
+- name: Ensure nginx config
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nginx/sites-available/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  with_items:
+    - default
+  notify: Restart nginx
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Update Postfix Admin
+  ansible.builtin.command: 'php {{ mailserver_pa_path }}/public/upgrade.php'
+
+- name: Login setup
+  ansible.builtin.uri:
+    url: 'http://localhost/admin/public/setup.php'
+    method: POST
+    status_code: 200
+    validate_certs: false
+    body_format: form-urlencoded
+    follow_redirects: true
+    body:
+      setup_password: '{{ mailserver_pa_setup_password.stdout }}'
+      submit: 'setuppw'
+  register: login
+  when: (download.changed) or
+    (not pa_directory.stat.exists)
+
+- name: Generate admin passowrd
+  ansible.builtin.command: >
+    bash {{ mailserver_pa_path }}/scripts/postfixadmin-cli admin add {{ mailserver_pa_admin_user }}
+    --superadmin 1
+    --active 1
+    --password {{ mailserver_pa_admin_password }}
+    --password2 {{ mailserver_pa_admin_password }}
+  when: (download.changed) or
+    (not pa_directory.stat.exists)

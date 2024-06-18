@@ -1,0 +1,5 @@
+user = {{ mailserver_mysql_user }}
+password = {{ mailserver_mysql_password }}
+hosts = 127.0.0.1
+dbname = {{ mailserver_mysql_db_name }}
+query = SELECT domain FROM domain WHERE domain='%u'

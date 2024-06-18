@@ -1,0 +1,13 @@
+# templates/hosts.j2
+# {{ ansible_managed }}
+127.0.0.1   localhost 
+127.0.0.1   {{ ansible_hostname }}
+
+# Network nodes as generated through Ansible.
+
+# minio-cluster
+{% for host in groups['all'] %}
+{% if 'ansible_default_ipv4' in hostvars[host] %}
+{{ hostvars[host]['ansible_default_ipv4']['address'] }}  {{ host }}
+{% endif %}
+{% endfor %}

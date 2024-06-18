@@ -1,0 +1,6 @@
+---
+- tags: [never, bootstrap.reboot]
+  block:
+    - name: reboot hosts
+      ansible.builtin.reboot: {}
+  become: true

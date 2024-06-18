@@ -1,0 +1,35 @@
+---
+- name: Install Mail Packages
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+    install_recommends: False
+  loop:
+    - nginx
+    - postfix
+    - postfix-mysql
+    - dovecot-imapd
+    - dovecot-pop3d
+    - dovecot-mysql
+    - python3-pymysql
+    - php
+    - php-fpm
+    - php-mysql
+    - php-mbstring
+    - php-imap
+    - php-pear
+    - php-intl
+    - php-ldap
+    - php-net-smtp
+    - php-gd
+    - php-imagick
+    - php-zip
+    - php-curl
+    - php-dom
+    - php-xml
+    - php-mcrypt
+    - php-mbstring
+
+- name: Get Version PHP
+  ansible.builtin.shell: php -v | head -n 1 | cut -d " " -f 2 | cut -f1-2 -d"."
+  register: php_version

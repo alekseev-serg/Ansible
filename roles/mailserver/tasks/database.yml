@@ -1,0 +1,26 @@
+---
+# Ensure MariaDB is running.
+- name: Ensure MariaDB Is Running
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Ensure database is present
+  community.mysql.mysql_db:
+    name: "{{ mailserver_mysql_db_name }}"
+    state: present
+    encoding: "utf8"
+    collation: "utf8_general_ci"
+    login_user: "{{ mailserver_mysql_root_user }}"
+    login_password: "{{ mailserver_mysql_root_password }}"
+
+- name: Ensure database user is present
+  community.mysql.mysql_user:
+    name: "{{ mailserver_mysql_user }}"
+    password: "{{ mailserver_mysql_password }}"
+    priv: "{{ mailserver_mysql_db_name }}.*:ALL,GRANT"
+    state: present
+    login_user: "{{ mailserver_mysql_root_user }}"
+    login_password: "{{ mailserver_mysql_root_password }}"
+  notify: Flush Priviliges

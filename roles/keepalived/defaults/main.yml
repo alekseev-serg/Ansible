@@ -1,0 +1,20 @@
+---
+keepalived__version: "1:2.0.19-2ubuntu0.2"
+keepalived__auth_type: "PASS"
+keepalived__virtual_ipaddress: 127.0.0.1
+keepalived__interface: "ens160"
+keepalived__count_hosts: 4
+keepalived__instances: 
+# example
+  # - ip: 10.200.225.151
+  #   state: master
+  #   priority: 100
+  # - ip: 10.200.225.152
+  #   state: backup
+  #   priority: 99
+  # - ip: 10.200.225.153
+  #   state: backup
+  #   priority: 98
+  # - ip: 10.200.225.154
+  #   state: backup
+  #   priority: 97

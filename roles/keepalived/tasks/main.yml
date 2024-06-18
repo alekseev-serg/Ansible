@@ -1,0 +1,22 @@
+---
+# включаем маршрутизацию пакетов
+- name: ipv4 forward on
+  ansible.builtin.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: install keepalived
+  ansible.builtin.apt:
+    name: keepalived={{ keepalived__version }}
+    state: present
+
+- name: copy conf file
+  ansible.builtin.template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    force: true
+  notify:
+    - restart keepalived

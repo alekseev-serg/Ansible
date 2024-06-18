@@ -1,0 +1,12 @@
+---
+nginx__version: "1.18.0-0ubuntu1.4"
+nginx__upstream_name: ""
+nginx__upstream_port: 9001
+nginx__listen_port: 80
+nginx__server_name: ""
+nginx__host_names:
+# example
+#  - "devdata-minio-01"
+#  - "devdata-minio-02"
+#  - "devdata-minio-03"
+#  - "devdata-minio-04"

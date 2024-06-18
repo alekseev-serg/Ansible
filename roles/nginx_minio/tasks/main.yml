@@ -1,0 +1,15 @@
+---
+- name: install nginx
+  ansible.builtin.apt:
+    name: nginx={{ nginx__version }}
+    state: present
+
+- name: copy conf file
+  ansible.builtin.template:
+    src: minio.devdata.lan.conf.j2
+    dest: /etc/nginx/conf.d/minio.conf
+    force: true
+  notify:
+    - restart nginx
+
+

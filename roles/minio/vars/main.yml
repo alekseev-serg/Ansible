@@ -1,0 +1,4 @@
+---
+minio__bin_dir: "/usr/local/bin"
+minio__user: "minio"
+minio__group: "minio"

@@ -1,0 +1,23 @@
+---
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: Import database
+  community.mysql.mysql_db:
+    name: "{{ mailserver_mysql_db_name_roundcube }}"
+    state: import
+    target: "{{ mailserver_roundcube_path }}/SQL/mysql.initial.sql"
+    login_user: "{{ mailserver_mysql_root_user }}"
+    login_password: "{{ mailserver_mysql_root_password }}"
+
+- name: Update database for getmail
+  community.mysql.mysql_db:
+    name: "{{ mailserver_mysql_roundcube_db_name }}"
+    state: import
+    target: "{{ roundcube_working_dir }}/current/plugins/getmail/drivers/database/SQL/mysql.initial.sql"
+    login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Flush Priviliges
+  command: mysql -u root -p{{ mysql_root_password }} -e "FLUSH PRIVILEGES"

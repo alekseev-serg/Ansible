@@ -1,0 +1,18 @@
+---
+# включить раздел и монтирование второго диска
+bootstrap__storage_enable: false
+bootstrap__storage_group_name: DATAVG
+bootstrap__storage_device: /dev/sdb
+bootstrap__storage_volumes:
+  - path: /data
+    volume: data
+    mount_opts: [defaults]
+
+# обновить все apt/yum пакеты
+bootstrap__update_packages: true
+
+# список пакетов для установки через apt/yum
+bootstrap__packages: []
+# bootstrap__packages:
+#   - docker
+#   - ffmpeg
