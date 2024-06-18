@@ -1,0 +1,11 @@
+---
+- name: Prepare Hosts
+  hosts: k8s_cluster
+  become: yes
+
+  tasks:
+    - name: Update and upgrade packages
+      yum:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
