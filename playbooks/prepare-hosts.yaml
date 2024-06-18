@@ -22,6 +22,5 @@
           - python3
           - tar
           - rsyslog
-          - htop
           - wget
         state: latest
