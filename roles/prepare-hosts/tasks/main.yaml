@@ -55,3 +55,4 @@
 - name: If swap is enabled - disable it
   shell: swapoff -a
   when: swap_present.stdout != ""
+  become: yes
