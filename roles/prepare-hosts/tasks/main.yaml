@@ -43,6 +43,7 @@
     name: firewalld
     state: stopped
     enabled: false
+  become: yes
 
 - name: Check is swap enable
   shell: swapon
