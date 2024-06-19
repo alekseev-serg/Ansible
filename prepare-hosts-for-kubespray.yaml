@@ -1,0 +1,6 @@
+---
+- name: Prepare hosts to kubespray
+  hosts: k8s_cluster
+
+  roles:
+    - prepare-hosts
