@@ -55,7 +55,9 @@
       register: swap_present
       changed_when: false
       ignore_errors: true
+      become: yes
 
     - name: If swap is enabled - disable it
       shell: swapoff -a
       when: swap_present.stdout != ""
+      become: yes
