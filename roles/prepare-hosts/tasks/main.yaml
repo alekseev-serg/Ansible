@@ -46,7 +46,7 @@
   become: yes
 
 - name: Check is swap enable
-  shell: swapon
+  command: swapon
   register: swap_present
   changed_when: false
   ignore_errors: true
