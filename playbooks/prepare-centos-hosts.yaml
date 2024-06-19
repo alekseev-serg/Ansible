@@ -24,3 +24,9 @@
           - rsyslog
           - wget
         state: latest
+
+    - name: Disable NetworkManager
+      service:
+        name: NetworkManager
+        state: stopped
+        enabled: no
