@@ -46,10 +46,11 @@
   become: yes
 
 - name: Check is swap enable
-  command: swapon
+  shell: swapon
   register: swap_present
   changed_when: false
   ignore_errors: true
+  become: yes
 
 - name: If swap is enabled - disable it
   shell: swapoff -a
