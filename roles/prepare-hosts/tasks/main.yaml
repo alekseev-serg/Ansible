@@ -66,5 +66,5 @@
   register: selinux_ret
 
 - name: Disable SELinux
-  shell: serenforce 0
+  shell: setenforce 0
   when: selinux_ret.reboot_required
