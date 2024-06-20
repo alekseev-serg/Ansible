@@ -62,6 +62,7 @@
     path: /etc/fstab
     regexp: '^([^#].*\s*swap\s*.*)$'
     replace: '# \1'
+  become: yes
 
 - name: Check Disable SELinux
   selinux:
