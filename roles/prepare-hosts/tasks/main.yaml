@@ -43,26 +43,22 @@
     name: firewalld
     state: stopped
     enabled: false
-  become: yes
 
 - name: Check is swap enable
   shell: swapon
   register: swap_present
   changed_when: false
   ignore_errors: true
-  become: yes
 
 - name: If swap is enabled - disable it
   shell: swapoff -a
   when: swap_present.stdout != ""
-  become: yes
 
 - name: Disable swap in fstab
   replace:
     path: /etc/fstab
     regexp: '^([^#].*\s*swap\s*.*)$'
     replace: '# \1'
-  become: yes
 
 - name: Check Disable SELinux
   selinux:
@@ -72,4 +68,3 @@
 - name: Disable SELinux
   shell: serenforce 0
   when: selinux_ret.reboot_required
-  become: yes
